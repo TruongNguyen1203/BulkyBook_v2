@@ -163,7 +163,7 @@ namespace BulkyBook.Areas.Customer.Controllers
             shoppingCartVM.ListCart = _unitOfWork.ShoppingCart
                                 .GetAll(c => c.ApplicationUserId == claim.Value, includeProperties:"Product");
             shoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
-          //  shoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
+            shoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
             shoppingCartVM.OrderHeader.ApplicationUserId = claim.Value;
             shoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
 
@@ -189,7 +189,7 @@ namespace BulkyBook.Areas.Customer.Controllers
             _unitOfWork.Save();
             HttpContext.Session.SetInt32(SD.ssShoppingCart, 0);
 
-            if(stripeToken == null)
+            if (stripeToken == null)
             {
 
             }
@@ -207,7 +207,7 @@ namespace BulkyBook.Areas.Customer.Controllers
                 var service = new ChargeService();
                 Charge charge = service.Create(options);
 
-                if(charge.BalanceTransactionId == null)
+                if (charge.BalanceTransactionId == null)
                 {
                     shoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusRejected;
                 }
@@ -215,11 +215,11 @@ namespace BulkyBook.Areas.Customer.Controllers
                 {
                     shoppingCartVM.OrderHeader.TransactionId = charge.BalanceTransactionId;
                 }
-                if(charge.Status.ToLower() =="succeeded")
+                if (charge.Status.ToLower() == "succeeded")
                 {
                     shoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusApproved;
-                    //shoppingCartVM.OrderHeader.OrderStatus = SD.StatusApproved
-                    shoppingCartVM.OrderHeader.PaymentDate = DateTime.Now;  
+                    shoppingCartVM.OrderHeader.OrderStatus = SD.StatusApproved;
+                    shoppingCartVM.OrderHeader.PaymentDate = DateTime.Now;
                 }
             }
             _unitOfWork.Save();
